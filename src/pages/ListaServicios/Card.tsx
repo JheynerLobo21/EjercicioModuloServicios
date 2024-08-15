@@ -6,11 +6,11 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import Typography from '@mui/material/Typography';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { EditServiceModal } from './ModalEditService';
-import { EditServiceModalChildren } from './EditServiceModalChildren';
+import { EditServiceModalChildren } from './ModalEditServiceChildren';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import AddServiceModal from './Modal';
 import { ServiciosContext } from '../../Context/serviciosContext';
-import { ServicioPadre, ServicioHijo } from '../../types/services';
+import { ServicioPadre, ServicioHijo, ServicioContext} from '../../types/services';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -21,7 +21,7 @@ import { AddChildServiceModal } from './ModalChild';
 import './styles.css';
 
 export function BasicCard() {
-  const { serviciosPadres, deleteService } = useContext(ServiciosContext) as any;
+  const { serviciosPadres, deleteService } = useContext<ServicioContext>(ServiciosContext);
   const [expanded, setExpanded] = useState<string | false>(false);
   const [open, setOpen] = useState(false);
   const [currentServiceId, setCurrentServiceId] = useState<number | null>(null);
@@ -29,8 +29,11 @@ export function BasicCard() {
   const [isChild, setIsChild] = useState(false);
 
   const handleAccordionChange = (panelId: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+    event.preventDefault();
     setExpanded(isExpanded ? panelId : false);
   };
+
+  console.log(serviciosPadres)
 
   const handleOpen = (id: number, isChildService = false, childId: number | null = null) => {
     setCurrentServiceId(id);
@@ -45,11 +48,13 @@ export function BasicCard() {
 
   const handleDelete = () => {
     if (isChild && currentServiceId !== null && currentChildServiceId !== null) {
-      // Lógica para eliminar servicio hijo
+      if(deleteService){
       deleteService(currentChildServiceId, 2, currentServiceId);
+      }
     } else if (!isChild && currentServiceId !== null) {
-      // Lógica para eliminar servicio padre
-      deleteService(currentServiceId, 1, null);
+      if(deleteService){
+      deleteService(currentServiceId, 1, currentServiceId);
+      }
     }
     setOpen(false);
   };
@@ -62,7 +67,8 @@ export function BasicCard() {
           <div style={{ marginLeft: "30px", marginTop: "10px" }}>
             <AddServiceModal />
           </div>
-          {serviciosPadres &&
+          {
+          serviciosPadres &&
             serviciosPadres.map((servicio: ServicioPadre) => (
               <div key={servicio.id}>
                 <Accordion

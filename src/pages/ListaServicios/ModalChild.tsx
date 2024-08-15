@@ -46,6 +46,7 @@ export const AddChildServiceModal: React.FC<{ parentId: number }> = ({ parentId 
     const handleSaveChildService = (e: React.FormEvent) => {
         e.preventDefault();
         if (formData.name && formData.description) {
+            if(saveService){
             saveService(formData, parentId);  
             setFormData({
                 id: 0,
@@ -53,7 +54,9 @@ export const AddChildServiceModal: React.FC<{ parentId: number }> = ({ parentId 
                 description: '',
                 level: 2,
                 idPadre: parentId,
+                
             });
+        }
             handleClose();
         } else {
             console.error('Form data is incomplete:', formData);

@@ -7,7 +7,7 @@ import TextField from '@mui/material/TextField';
 import CloseIcon from '@mui/icons-material/Close';
 import ModeOutlinedIcon from '@mui/icons-material/ModeOutlined';
 import { ServiciosContext } from '../../Context/serviciosContext';
-import { ServicioHijo } from '../../types/services';
+import { ServicioHijo, ServicioContext } from '../../types/services';
 import './styles.css';
 
 const style = {
@@ -24,6 +24,7 @@ const style = {
 
 interface Props {
   servicio: ServicioHijo;
+  parentId:number
 }
 
 export const EditServiceModalChildren = ({ servicio }: Props) => {
@@ -31,7 +32,7 @@ export const EditServiceModalChildren = ({ servicio }: Props) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const { updateService } = useContext(ServiciosContext) as any;
+  const { updateService } = useContext<ServicioContext>(ServiciosContext);
   const [formData, setFormData] = useState<ServicioHijo>(servicio);
 
   useEffect(() => {
@@ -49,8 +50,10 @@ export const EditServiceModalChildren = ({ servicio }: Props) => {
   const handleSaveService = (e: React.FormEvent) => {
     e.preventDefault();
     if (formData) {
-      updateService(formData, formData.idPadre);  // Pasamos el servicio hijo y el ID del padre
+        if(updateService) {
+      updateService(formData, formData.idPadre); 
       handleClose();
+        }
     }
   };
 

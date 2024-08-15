@@ -10,15 +10,15 @@ export const serviceReducer = (state: ServicioPadre[], action: Action): Servicio
     case 'ADD_SERVICE': {
       const { service, parentId } = action.payload;
       if (service.level === 1) {
-        return [...state, { ...service, id: Math.random(), serviciosHijo: [] }];
+        return [...state, { ...service, id: Math.round(Math.random()*100), serviciosHijo: [] }];
       } else if (service.level === 2 && parentId !== null) {
         return state.map(padre =>
           padre.id === parentId
             ? {
                 ...padre,
                 serviciosHijo: padre.serviciosHijo
-                  ? [...padre.serviciosHijo, { ...service, id: Math.random() }]
-                  : [{ ...service, id: Math.random() }],
+                  ? [...padre.serviciosHijo, { ...service, id: Math.round(Math.random()*100) }]
+                  : [{ ...service, id: Math.round(Math.random()*100) }],
               }
             : padre
         );

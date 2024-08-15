@@ -61,4 +61,13 @@
     height: auto;
 }
 
+.MuiTypography-root.MuiTypography-body1.MuiListItemText-primarycss-10hburv-MuiTypography-root{
+    text-decoration: none;
+}
+
+#item-menu.active{
+    background-color: #0047BA;
+    color: #FFDD00;
+}
+
 

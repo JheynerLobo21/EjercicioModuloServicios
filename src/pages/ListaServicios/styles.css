@@ -7,6 +7,10 @@
     font-size: 16px;
 }
 
+.edition-iconsPaper{
+    margin-top: 80px;
+}
+
 #services{
     display: flex;
     justify-content: center;
@@ -56,12 +60,17 @@
 }
 
 #accept-export{
-    width: 80px;
+    text-transform: capitalize;
+    font-weight: 500;
+    height: 34px;
+    width: 100px;
+    padding: 5px 20px;
     background-color: #FFDD00;
     color: #0047BA;
     padding: 8px;
     margin: 0 auto;
-    margin-top: 40px;
+    margin-top: 32px;
+    border-radius: 7px;
 }
 
 .form-export{
@@ -140,18 +149,48 @@ h5{
 }
 
 
+.MuiBox-root.css-1wnsr1i.modal-import-export{
+    width: 330px;
+    height: 400px;
+}
+
+.css-1nhl7pj{
+    border-radius: 10px;
+}
+
+.MuiBox-root.css-1nhl7pj .css-i4bv87-MuiSvgIcon-root{
+    color: #707070;
+}
+
+.MuiBox-root.css-1wnsr1i .MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium.css-i4bv87-MuiSvgIcon-root{
+    position: absolute;
+    top: 20px;
+}
+
 .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root,
 .css-dpjnhs-MuiInputBase-root-MuiOutlinedInput-root{
     width: 385px;
 }
 
 .css-2ulfj5-MuiTypography-root {
-    text-align: center;
+    text-align: center;    
+}
+
+#modal-modal-title{
+    margin-top: 30px;
+}
+
+#export{
+    margin-top: 50px;
 }
 
 #btn-accept{
     margin-top: 20px;
-    margin-left: 77%;
+    margin-left: 74%;
+}
+
+h2{
+    margin-top: -60px;
 }
 
 .css-i4bv87-MuiSvgIcon-root {
@@ -167,7 +206,7 @@ h5{
 }
 
 .catalog-services{
-    margin: 100px 0 0 200px;
+    margin: 100px 0 0 170px;
     position: relative;
 }
 
