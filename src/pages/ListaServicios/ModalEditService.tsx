@@ -24,14 +24,15 @@ const style = {
 
 interface Props {
   servicio: ServicioPadre;
+  parentId: number | null; // Para pasar el ID del padre si es necesario
 }
 
-export const EditServiceModal = ({ servicio }: Props) => {
+export const EditServiceModal = ({ servicio, parentId }: Props) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const { updateService } = useContext(ServiciosContext);
+  const { updateService } = useContext(ServiciosContext) || {};
   const [formData, setFormData] = useState<ServicioPadre>(servicio);
 
   useEffect(() => {
@@ -48,8 +49,8 @@ export const EditServiceModal = ({ servicio }: Props) => {
 
   const handleSaveService = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData) {
-        updateService(formData);
+    if (formData && updateService) {
+      updateService(formData, parentId); // Pasa el parentId si es necesario
       handleClose();
     }
   };
@@ -66,7 +67,7 @@ export const EditServiceModal = ({ servicio }: Props) => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
         sx={{ mt: 8 }}
-        id="modal-add-service"
+        id="modal-edit-service"
       >
         <Box sx={style}>
           <CloseIcon id="cancel" onClick={handleClose} style={{ cursor: 'pointer' }} />

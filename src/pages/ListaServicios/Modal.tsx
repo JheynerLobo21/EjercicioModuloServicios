@@ -23,17 +23,17 @@ const style = {
 
 export default function BasicModal() {
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const { saveService } = useContext(ServiciosContext);
+  const { saveService } = useContext(ServiciosContext) || {};
   const [formData, setFormData] = useState<ServicioPadre>({
     id: 0,
     name: '',
     description: '',
     level: 1,
-    serviciosHijo: null,
+    serviciosHijo: [],
   });
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const handleForm = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const { id, value } = e.target;
@@ -45,22 +45,26 @@ export default function BasicModal() {
 
   const handleSaveService = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData) {
-      saveService(formData);
+    if (formData.name && formData.description) {
+      if (saveService) {
+        saveService(formData, null); 
+      }
       setFormData({
         id: 0,
         name: '',
         description: '',
         level: 1,
-        serviciosHijo: null,
+        serviciosHijo: [],
       });
       handleClose();
+    } else {
+      console.error('Form data is incomplete:', formData);
     }
   };
 
   return (
     <div>
-      <Button onClick={handleOpen} style={{ textTransform: 'lowercase', color: '#31C462'}}>
+      <Button onClick={handleOpen} style={{ textTransform: 'lowercase', color: '#31C462' }}>
         + Agregar categoría / servicio
       </Button>
 
@@ -80,13 +84,13 @@ export default function BasicModal() {
 
           <form className="Form" onSubmit={handleSaveService}>
             <Box sx={{ mt: 4 }}>
-              <TextField 
-                id="name" 
-                label="Nombre *" 
-                variant="outlined" 
+              <TextField
+                id="name"
+                label="Nombre *"
+                variant="outlined"
                 fullWidth
                 value={formData.name}
-                onChange={handleForm} 
+                onChange={handleForm}
               />
             </Box>
             <Box sx={{ mt: 4 }}>
@@ -100,8 +104,8 @@ export default function BasicModal() {
                 onChange={handleForm}
               />
             </Box>
-            <Button 
-              variant="contained" 
+            <Button
+              variant="contained"
               id="btn-accept"
               type="submit"
               sx={{ mt: 2 }}

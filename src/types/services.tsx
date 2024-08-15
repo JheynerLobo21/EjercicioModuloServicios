@@ -14,21 +14,9 @@ export interface ServicioHijo {
     idPadre: number;
 }
 
-export interface ServicioContextPadre {
+export interface ServicioContext {
     serviciosPadres: ServicioPadre[] | null;
-    saveService: (servicio: ServicioPadre) => void;
-    updateService: (servicio: ServicioPadre) => void;
-    deleteService: (id: number) => void;
-    addChildService: (parentId: number, child: ServicioHijo) => void;
-    updateChildService: (parentId: number, child: ServicioHijo) => void;
-    deleteChildService: (parentId: number, childId: number) => void;
+    saveService: (servicio: ServicioPadre | ServicioHijo, id: number | null) => void;
+    updateService: (servicio: ServicioPadre | ServicioHijo, id: number | null) => void;
+    deleteService: (id: number, level:number, idPadre: number | null) => void;
   }
-  
-
-
-export interface ServicioContextHijo {
-    serviciosHijos: ServicioHijo[] | null;
-    saveService: (servicio: ServicioHijo) => void;
-    updateService: (servicio: ServicioHijo) => void;
-    deleteService: (id: number) => void;
-}

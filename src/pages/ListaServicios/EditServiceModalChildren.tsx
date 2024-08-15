@@ -31,7 +31,7 @@ export const EditServiceModalChildren = ({ servicio }: Props) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const { updateChildService } = useContext(ServiciosContext) as any;
+  const { updateService } = useContext(ServiciosContext) as any;
   const [formData, setFormData] = useState<ServicioHijo>(servicio);
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export const EditServiceModalChildren = ({ servicio }: Props) => {
   const handleSaveService = (e: React.FormEvent) => {
     e.preventDefault();
     if (formData) {
-      updateChildService(formData.idPadre, formData);
+      updateService(formData, formData.idPadre);  // Pasamos el servicio hijo y el ID del padre
       handleClose();
     }
   };
@@ -71,7 +71,7 @@ export const EditServiceModalChildren = ({ servicio }: Props) => {
         <Box sx={style}>
           <CloseIcon id="cancel" onClick={handleClose} style={{ cursor: 'pointer' }} />
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Editar categoría - Servicio
+            Editar servicio hijo
           </Typography>
 
           <form className="Form" onSubmit={handleSaveService}>

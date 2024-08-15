@@ -21,7 +21,7 @@ import { AddChildServiceModal } from './ModalChild';
 import './styles.css';
 
 export function BasicCard() {
-  const { serviciosPadres, deleteService, deleteChildService } = useContext(ServiciosContext) as any;
+  const { serviciosPadres, deleteService } = useContext(ServiciosContext) as any;
   const [expanded, setExpanded] = useState<string | false>(false);
   const [open, setOpen] = useState(false);
   const [currentServiceId, setCurrentServiceId] = useState<number | null>(null);
@@ -45,9 +45,11 @@ export function BasicCard() {
 
   const handleDelete = () => {
     if (isChild && currentServiceId !== null && currentChildServiceId !== null) {
-      deleteChildService(currentServiceId, currentChildServiceId);
+      // Lógica para eliminar servicio hijo
+      deleteService(currentChildServiceId, 2, currentServiceId);
     } else if (!isChild && currentServiceId !== null) {
-      deleteService(currentServiceId);
+      // Lógica para eliminar servicio padre
+      deleteService(currentServiceId, 1, null);
     }
     setOpen(false);
   };
@@ -81,7 +83,7 @@ export function BasicCard() {
                   >
                     <Typography>{servicio.name}</Typography>
                     <div className="optionsClickService">
-                      <EditServiceModal servicio={servicio} />
+                      <EditServiceModal servicio={servicio} parentId={servicio.id} />
                       <PowerSettingsNewIcon onClick={() => handleOpen(servicio.id)} />
                     </div>
                   </AccordionSummary>
@@ -109,7 +111,7 @@ export function BasicCard() {
                           >
                             <Typography>{child.name}</Typography>
                             <div className="optionsClickService">
-                              <EditServiceModalChildren servicio={child} />
+                              <EditServiceModalChildren servicio={child} parentId={servicio.id} />
                               <PowerSettingsNewIcon onClick={() => handleOpen(servicio.id, true, child.id)} />
                             </div>
                           </AccordionSummary>

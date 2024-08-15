@@ -18,94 +18,93 @@ const style = {
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
-  };
-  
+};
 
-  export const AddChildServiceModal: React.FC<{ parentId: number }> = ({ parentId }) => {
+export const AddChildServiceModal: React.FC<{ parentId: number }> = ({ parentId }) => {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-  
-    const { addChildService } = useContext(ServiciosContext);
-  
-    const [formData, setFormData] = useState<ServicioHijo>({
-      id: 0,
-      name: '',
-      description: '',
-      level: 2,
-      idPadre: parentId,
-    });
-  
-    const handleForm = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-      const { id, value } = e.target;
-      setFormData(prevState => ({
-        ...prevState,
-        [id]: value,
-      }));
-    };
-  
-    const handleSaveChildService = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (formData) {
-        addChildService(parentId, formData);  
-        setFormData({
-          id: 0,
-          name: '',
-          description: '',
-          level: 2,
-          idPadre: parentId,
-        });
-        handleClose();
-      }
-    };
-  
-    return (
-      <div>
-        <Button onClick={handleOpen} style={{ textTransform: 'lowercase', color: '#31C462' }}>
-          + Agregar categoría / servicio
-        </Button>
-  
-        <Modal open={open} onClose={handleClose}>
-          <Box sx={style}>
-            <CloseIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
-            <Typography variant="h6" component="h2">
-              Agregar servicio hijo
-            </Typography>
-  
-            <form onSubmit={handleSaveChildService}>
-              <Box sx={{ mt: 4 }}>
-                <TextField 
-                  id="name" 
-                  label="Nombre *" 
-                  variant="outlined" 
-                  fullWidth
-                  value={formData.name}
-                  onChange={handleForm} 
-                />
-              </Box>
-              <Box sx={{ mt: 4 }}>
-                <TextField
-                  id="description"
-                  label="Descripción del servicio *"
-                  multiline
-                  rows={3}
-                  fullWidth
-                  value={formData.description}
-                  onChange={handleForm}
-                />
-              </Box>
-              <Button 
-                variant="contained" 
-                type="submit"
-                sx={{ mt: 2 }}
-              >
-                Aceptar
-              </Button>
-            </form>
-          </Box>
-        </Modal>
-      </div>
-    );
-  };
 
-  
+    const { saveService } = useContext(ServiciosContext);
+
+    const [formData, setFormData] = useState<ServicioHijo>({
+        id: 0,
+        name: '',
+        description: '',
+        level: 2,
+        idPadre: parentId,
+    });
+
+    const handleForm = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+        const { id, value } = e.target;
+        setFormData(prevState => ({
+            ...prevState,
+            [id]: value,
+        }));
+    };
+
+    const handleSaveChildService = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (formData.name && formData.description) {
+            saveService(formData, parentId);  
+            setFormData({
+                id: 0,
+                name: '',
+                description: '',
+                level: 2,
+                idPadre: parentId,
+            });
+            handleClose();
+        } else {
+            console.error('Form data is incomplete:', formData);
+        }
+    };
+
+    return (
+        <div>
+            <Button onClick={handleOpen} style={{ textTransform: 'lowercase', color: '#31C462' }}>
+                + Agregar categoría / servicio
+            </Button>
+
+            <Modal open={open} onClose={handleClose}>
+                <Box sx={style}>
+                    <CloseIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
+                    <Typography variant="h6" component="h2">
+                        Agregar servicio hijo
+                    </Typography>
+
+                    <form onSubmit={handleSaveChildService}>
+                        <Box sx={{ mt: 4 }}>
+                            <TextField 
+                                id="name" 
+                                label="Nombre *" 
+                                variant="outlined" 
+                                fullWidth
+                                value={formData.name}
+                                onChange={handleForm} 
+                            />
+                        </Box>
+                        <Box sx={{ mt: 4 }}>
+                            <TextField
+                                id="description"
+                                label="Descripción del servicio *"
+                                multiline
+                                rows={3}
+                                fullWidth
+                                value={formData.description}
+                                onChange={handleForm}
+                            />
+                        </Box>
+                        <Button 
+                            variant="contained" 
+                            type="submit"
+                            sx={{ mt: 2 }}
+                        >
+                            Aceptar
+                        </Button>
+                    </form>
+                </Box>
+            </Modal>
+        </div>
+    );
+};
