@@ -9,6 +9,8 @@ import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import Modal from '@mui/material/Modal';
+import Papa from 'papaparse';
+import * as XLSX from 'xlsx';
 import { ServiciosContext } from '../../Context/serviciosContext';
 import { ServicioPadre } from '../../types/services';
 
@@ -26,12 +28,16 @@ const style = {
 
 export default function ImportFile() {
   const [open, setOpen] = useState(false);
-  const [modeExport, setModeExport]= useState("");
+  const [modeExport, setModeExport] = useState<string | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
-  const { saveService } = useContext(ServiciosContext) as any;
+  const { serviciosPadres, saveService } = useContext(ServiciosContext) as any;
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
+  };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -40,49 +46,73 @@ export default function ImportFile() {
     const reader = new FileReader();
     reader.onload = (event) => {
       const content = event.target?.result as string;
-      
+
       try {
         const newServicios: ServicioPadre[] = JSON.parse(content);
         
         newServicios.forEach(servicio => {
           saveService(servicio);
         });
-            setOpen(false);
+        setOpen(false);
       } catch (error) {
         console.error('Error al parsear el archivo:', error);
       }
     };
     reader.readAsText(file);
-  };
+};
 
-  const handleButtonClick = () => {
-    fileInputRef.current?.click();
-    const selectedbutton = document.getElementById("importfile")?.classList;
-    
-    selectedbutton?.add("selected");
-  };
 
-  const handleChangeExcel=()=>{
+  const handleChangeExcel = () => {
     setModeExport("excel");
-    const selectedDivExcel = document.getElementById("exportFileExcel")?.classList;
-    const selectedDivCsv = document.getElementById("exportFileCsv")?.classList;
-    
-    selectedDivExcel?.add("selected");
-    selectedDivCsv?.remove("selected");
-  }
+    document.getElementById("exportFileExcel")?.classList.add("selected");
+    document.getElementById("exportFileCsv")?.classList.remove("selected");
+  };
 
-  const handleChangeCsv=()=>{
+  const handleChangeCsv = () => {
     setModeExport("csv");
-    const selectedDivExcel = document.getElementById("exportFileExcel")?.classList;
-    const selectedDivCsv = document.getElementById("exportFileCsv")?.classList;
-    
-    selectedDivCsv?.add("selected");
-    selectedDivExcel?.remove("selected");
-  }
+    document.getElementById("exportFileCsv")?.classList.add("selected");
+    document.getElementById("exportFileExcel")?.classList.remove("selected");
+  };
 
-  const handleSubmit=()=>{
+  const handleExportToCsv = () => {
+    const csvContent = [
+      ["ID", "Nombre", "Descripción", "Nivel", "Servicios Hijo"],
+      ...serviciosPadres.map((servicio: ServicioPadre) => [
+        servicio.id,
+        servicio.name,
+        servicio.description,
+        servicio.level,
+        servicio.serviciosHijo?.map(hijo => hijo.name).join(", ") || "N/A"
+      ])
+    ];
 
-  }
+    const csvString = csvContent.map(row => row.join(",")).join("\n");
+    const blob = new Blob([csvString], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.setAttribute("hidden", "");
+    a.setAttribute("href", url);
+    a.setAttribute("download", "servicios_padre.csv");
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  const handleExportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(serviciosPadres);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Servicios Padre");
+    XLSX.writeFile(workbook, "servicios_padre.xlsx");
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (modeExport === "csv") {
+      handleExportToCsv();
+    } else if (modeExport === "excel") {
+      handleExportToExcel();
+    }
+  };
 
   return (
     <div>
@@ -100,9 +130,9 @@ export default function ImportFile() {
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            <h5>Importar</h5>
+            <span>Importar</span>
           </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+          <div id="modal-modal-description" sx={{ mt: 2 }}>
             <TextField
               id="file-input"
               label="Seleccionar archivo"
@@ -111,46 +141,46 @@ export default function ImportFile() {
               style={{ display: 'none' }}
               onChange={handleFileUpload}
             />
-            <Button 
-              id="importfile" 
+            <Button
+              id="importfile"
               onClick={handleButtonClick}>
-              <label className='lbl-import' style={{ color:"#000", textTransform:"lowercase" }}>
+              <label className='lbl-import' style={{ color: "#000", textTransform: "lowercase" }}>
                 Seleccionar Archivo
               </label>
               <FolderOpenIcon />
             </Button>
             <span className='plantilla'>Descarga plantilla de importación de datos</span>
-          </Typography>
-          
+          </div>
+
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            <h5 style={{ marginTop:"40px" }}>Exportar</h5>
+            <span style={{ marginTop: "40px" }}>Exportar</span>
           </Typography>
           <form onSubmit={handleSubmit} className='form-export'>
-          <Typography id="modal-description" sx={{ mt: 2 }}>
-            <div id="exportFileExcel" onClick={handleChangeExcel}>
-              <div>
-                <ArticleOutlinedIcon id="icon-file" />
-                <label className='lbl-export' style={{ color:"#000", textDecoration:"none" }}>
-                  Plantilla.Excel
-                </label>
+            <Typography id="modal-description" sx={{ mt: 2 }} component="div">
+              <div id="exportFileExcel" onClick={handleChangeExcel}>
+                <div>
+                  <ArticleOutlinedIcon id="icon-file" />
+                  <label className='lbl-export' style={{ color: "#000", textDecoration: "none" }}>
+                    Plantilla.Excel
+                  </label>
+                </div>
+                <FileDownloadOutlinedIcon />
               </div>
-              <FileDownloadOutlinedIcon />
-            </div> 
-          </Typography>
-          
-          <Typography id="modal-description" sx={{ mt: 2 }}>
-            <div id="exportFileCsv" onClick={handleChangeCsv}>
-              <div>
-                <ArticleOutlinedIcon id="icon-file" />
-                <label className='lbl-export' style={{ color:"#000", textDecoration:"none" }}>
-                  Plantilla.Csv
-                </label>
+            </Typography>
+
+            <Typography id="modal-description" sx={{ mt: 2 }} component="div">
+              <div id="exportFileCsv" onClick={handleChangeCsv}>
+                <div>
+                  <ArticleOutlinedIcon id="icon-file" />
+                  <label className='lbl-export' style={{ color: "#000", textDecoration: "none" }}>
+                    Plantilla.Csv
+                  </label>
+                </div>
+                <FileDownloadOutlinedIcon />
               </div>
-              <FileDownloadOutlinedIcon />
-            </div> 
-          </Typography>
-          
-          <Button type='submit' id="accept-export">Aceptar</Button>
+            </Typography>
+
+            <Button type='submit' id="accept-export">Aceptar</Button>
           </form>
         </Box>
       </Modal>
