@@ -21,6 +21,7 @@ export interface ServicioContextPadre {
     deleteService: (id: number) => void;
     addChildService: (parentId: number, child: ServicioHijo) => void;
     updateChildService: (parentId: number, child: ServicioHijo) => void;
+    deleteChildService: (parentId: number, childId: number) => void;
   }
   
 

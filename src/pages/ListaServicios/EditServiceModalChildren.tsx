@@ -1,4 +1,3 @@
-
 import { useContext, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -7,9 +6,9 @@ import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import CloseIcon from '@mui/icons-material/Close';
 import ModeOutlinedIcon from '@mui/icons-material/ModeOutlined';
-import './styles.css';
 import { ServiciosContext } from '../../Context/serviciosContext';
 import { ServicioHijo } from '../../types/services';
+import './styles.css';
 
 const style = {
   position: 'absolute',
@@ -50,8 +49,7 @@ export const EditServiceModalChildren = ({ servicio }: Props) => {
   const handleSaveService = (e: React.FormEvent) => {
     e.preventDefault();
     if (formData) {
-        console.log(formData)
-        updateChildService(formData);
+      updateChildService(formData.idPadre, formData);
       handleClose();
     }
   };
@@ -111,4 +109,4 @@ export const EditServiceModalChildren = ({ servicio }: Props) => {
       </Modal>
     </div>
   );
-}
+};

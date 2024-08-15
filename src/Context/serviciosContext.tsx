@@ -23,15 +23,17 @@ export const ServicioPadreProvider: React.FC<{children: React.ReactNode}> = ({ c
     dispatch({ type: 'ADD_CHILD_SERVICE', payload: { parentId, child } });
   };
 
-  const updateChildService = (child: ServicioHijo) => {
-    dispatch({ type: 'UPDATE_CHILD_SERVICE', payload: { parentId: parentId, child } });
+  const updateChildService = (parentId: number, child: ServicioHijo) => {
+    dispatch({ type: 'UPDATE_CHILD_SERVICE', payload: { parentId, child } });
+  };
+
+  const deleteChildService = (parentId: number, childId: number) => {
+    dispatch({ type: 'DELETE_CHILD_SERVICE', payload: { parentId, childId } });
   };
   
-
   return (
-    <ServiciosContext.Provider value={{ serviciosPadres, saveService, updateService, deleteService, addChildService, updateChildService }}>
+    <ServiciosContext.Provider value={{ serviciosPadres, saveService, updateService, deleteService, addChildService, updateChildService, deleteChildService }}>
       {children}
     </ServiciosContext.Provider>
   );
 };
-

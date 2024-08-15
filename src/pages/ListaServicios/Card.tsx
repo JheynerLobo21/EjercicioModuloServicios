@@ -21,17 +21,21 @@ import { AddChildServiceModal } from './ModalChild';
 import './styles.css';
 
 export function BasicCard() {
-  const { serviciosPadres, deleteService } = useContext(ServiciosContext) as any;
+  const { serviciosPadres, deleteService, deleteChildService } = useContext(ServiciosContext) as any;
   const [expanded, setExpanded] = useState<string | false>(false);
   const [open, setOpen] = useState(false);
   const [currentServiceId, setCurrentServiceId] = useState<number | null>(null);
+  const [currentChildServiceId, setCurrentChildServiceId] = useState<number | null>(null);
+  const [isChild, setIsChild] = useState(false);
 
   const handleAccordionChange = (panelId: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panelId : false);
   };
 
-  const handleOpen = (id: number) => {
+  const handleOpen = (id: number, isChildService = false, childId: number | null = null) => {
     setCurrentServiceId(id);
+    setIsChild(isChildService);
+    setCurrentChildServiceId(childId);
     setOpen(true);
   };
 
@@ -40,10 +44,12 @@ export function BasicCard() {
   };
 
   const handleDelete = () => {
-    if (currentServiceId !== null) {
+    if (isChild && currentServiceId !== null && currentChildServiceId !== null) {
+      deleteChildService(currentServiceId, currentChildServiceId);
+    } else if (!isChild && currentServiceId !== null) {
       deleteService(currentServiceId);
-      setOpen(false);
     }
+    setOpen(false);
   };
 
   return (
@@ -102,8 +108,10 @@ export function BasicCard() {
                             id={`panel-child-${child.id}-header`}
                           >
                             <Typography>{child.name}</Typography>
-                            <EditServiceModalChildren servicio={child} />
-                            <PowerSettingsNewIcon />
+                            <div className="optionsClickService">
+                              <EditServiceModalChildren servicio={child} />
+                              <PowerSettingsNewIcon onClick={() => handleOpen(servicio.id, true, child.id)} />
+                            </div>
                           </AccordionSummary>
                           <Typography sx={{ padding: 2 }}>
                             {child.description}
@@ -128,7 +136,7 @@ export function BasicCard() {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            ¿Desea eliminar este servicio, incluidos los servicios hijo si los tiene?
+            {isChild ? "¿Desea eliminar este servicio hijo?" : "¿Desea eliminar este servicio, incluidos los servicios hijo si los tiene?"}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

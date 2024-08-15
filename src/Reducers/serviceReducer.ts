@@ -5,7 +5,8 @@ type Action =
   | { type: 'UPDATE_SERVICE'; payload: ServicioPadre }
   | { type: 'DELETE_SERVICE'; payload: number }
   | { type: 'ADD_CHILD_SERVICE'; payload: { parentId: string; child: ServicioHijo } }
-  | { type: 'UPDATE_CHILD_SERVICE'; payload: { parentId: string; child: ServicioHijo } };
+  | { type: 'UPDATE_CHILD_SERVICE'; payload: { parentId: string; child: ServicioHijo } }
+  | { type: 'DELETE_CHILD_SERVICE'; payload: { parentId: string; childId: number } };
 
 export const serviceReducer = (state: ServicioPadre[], action: Action): ServicioPadre[] => {
   switch (action.type) {
@@ -34,21 +35,29 @@ export const serviceReducer = (state: ServicioPadre[], action: Action): Servicio
           : padre
       );
 
-      case 'UPDATE_CHILD_SERVICE':
-        return state.map(padre =>
-          padre.id === action.payload.parentId
-            ? {
-                ...padre,
-                serviciosHijo: padre.serviciosHijo
-                  ? padre.serviciosHijo.map(hijo =>
-                      hijo.id === action.payload.child.id
-                        ? { ...hijo, name: action.payload.child.name, description: action.payload.child.description }
-                        : hijo
-                    )
-                  : []
-              }
-            : padre
-        );
+    case 'UPDATE_CHILD_SERVICE':
+      return state.map(padre =>
+        padre.id === action.payload.parentId
+          ? {
+              ...padre,
+              serviciosHijo: padre.serviciosHijo?.map(hijo =>
+                hijo.id === action.payload.child.id
+                  ? { ...hijo, name: action.payload.child.name, description: action.payload.child.description }
+                  : hijo
+              ) || [],
+            }
+          : padre
+      );
+    
+    case 'DELETE_CHILD_SERVICE':
+      return state.map(padre =>
+        padre.id === action.payload.parentId
+          ? {
+              ...padre,
+              serviciosHijo: padre.serviciosHijo?.filter(hijo => hijo.id !== action.payload.childId) || [],
+            }
+          : padre
+      );
 
     default:
       return state;
