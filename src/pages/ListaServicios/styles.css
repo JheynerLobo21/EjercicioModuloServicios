@@ -1,0 +1,173 @@
+#card-list-services{
+    width: 80%;
+}
+
+#txt-add-service{
+    color:#31C462;
+    font-size: 16px;
+}
+
+#services{
+    display: flex;
+    justify-content: center;
+}
+
+.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input{
+    display: none;
+}
+
+.css-1u3bzj6-MuiFormControl-root-MuiTextField-root{
+    visibility: hidden;
+}
+.icons-import{
+    position: relative;
+}
+
+#importfile, #exportFileExcel, #exportFileCsv{
+    border: 1px solid #707070;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#exportFileExcel, #exportFileCsv{
+    padding: 6px;
+    border-radius: 4px;
+}
+
+#exportFileExcel.selected, #exportFileCsv.selected, #importfile.selected{
+    border: 1px solid gold;
+}
+
+.css-1u3bzj6-MuiFormControl-root-MuiTextField-root{
+    display: none;
+}
+
+.icons-import .css-i4bv87-MuiSvgIcon-root{
+    position: absolute;
+    left: 20px;
+}
+
+.MuiBox-root.css-1wnsr1i .MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium.css-i4bv87-MuiSvgIcon-root{
+    right: 20px;
+    top: 5px;
+    color: #707070;
+    z-index: 10;
+}
+
+#accept-export{
+    width: 80px;
+    background-color: #FFDD00;
+    color: #0047BA;
+    padding: 8px;
+    margin: 0 auto;
+    margin-top: 40px;
+}
+
+.form-export{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#accordion-services{
+    box-shadow: 0px 3px 6px #00000029;
+}
+
+h5{
+    margin: 0;
+    color: #0047BA;
+}
+
+.lbl-import::first-letter{
+    text-transform: uppercase;
+}
+
+.lbl-export{
+    text-transform: capitalize ;
+    text-decoration: none;
+}
+
+#exportfile #icon-file{
+    position: relative;
+    margin-top: -7px;
+    margin-left: 18px;
+}
+
+.plantilla{
+    font-size: 10px;
+    position: absolute;
+    right: 32px;
+    color: #0047BA;
+}
+
+.css-1086bdv-MuiPaper-root-MuiAccordion-root::before{
+    display: none;
+}
+
+
+.title-catalog{
+    width: 100%;
+    background-color: #0047BA;
+    height: 40px;
+    font-family: Re;
+    color: #fff;
+    font-size: 18px;
+    align-content: center;
+    padding-left: 30px;
+}
+
+.css-ahj2mt-MuiTypography-root .css-i4bv87-MuiSvgIcon-root{
+    position: absolute;
+    right: 30px;
+}
+
+.title-edit-catalog{
+    margin-left: 100px;
+}
+
+#redirection{
+    margin-left: 80px;
+}
+
+.MuiBox-root.css-1wnsr1i{
+    border: none;
+    width: 450px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+.css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root,
+.css-dpjnhs-MuiInputBase-root-MuiOutlinedInput-root{
+    width: 385px;
+}
+
+.css-2ulfj5-MuiTypography-root {
+    text-align: center;
+}
+
+#btn-accept{
+    margin-top: 20px;
+    margin-left: 77%;
+}
+
+.css-i4bv87-MuiSvgIcon-root {
+    color: #0047BA;
+}
+
+.optionsClickService{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    top: 10px;
+    right: 50px;
+}
+
+.catalog-services{
+    margin: 100px 0 0 200px;
+    position: relative;
+}
+

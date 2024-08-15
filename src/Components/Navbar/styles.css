@@ -1,0 +1,64 @@
+
+.css-hyum1k-MuiToolbar-root{
+    background-color: white;
+}
+
+#dropdown-icon{
+    color: #0047BA;
+}
+
+.logo_macropay{
+    width: 100px;
+    margin-top: 15px;
+}
+
+.css-cveggr-MuiListItemIcon-root .css-i4bv87-MuiSvgIcon-root{
+    color: #4B5468;
+}
+
+.data-user{
+    display:flex;
+    position: absolute;
+    right: 20px;
+    text-align: right;
+    align-items: center;
+}
+
+#name-user{
+    color: #0047BA;
+    font-size: 14px;
+    padding: 0;
+    text-align: right;
+    margin-left: -65px;
+}
+
+#txt-user{
+    color: #4B5468;
+    font-size: 12px;
+    padding: 0;
+    text-align: right;
+}
+
+#name-user:hover, #txt-user:hover{
+    background-color: transparent;
+}
+
+.css-93mzl9-MuiButtonBase-root-MuiIconButton-root .css-i4bv87-MuiSvgIcon-root {
+    color: #31C462aa;
+    width: 30px;
+    height: 30px;
+}
+
+.pet-macropay{
+    position: relative;
+    margin-top: 130px;
+}
+
+.pet-macropay img{
+    position: absolute;
+    right: 0;
+    width: 80px;
+    height: auto;
+}
+
+
