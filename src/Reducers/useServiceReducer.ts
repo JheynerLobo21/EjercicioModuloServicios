@@ -9,23 +9,41 @@ export const serviceReducer = (state: ServicioPadre[], action: Action): Servicio
   switch (action.type) {
     case 'ADD_SERVICE': {
       const { service, parentId } = action.payload;
+      
       if (service.level === 1) {
-        return [...state, { ...service, id: Math.round(Math.random()*100), serviciosHijo: [] }];
-      } else if (service.level === 2 && parentId !== null) {
-        return state.map(padre =>
+        return [...state, { ...service, id: Math.round(Math.random() * 100), serviciosHijo: [] }];
+      } 
+      
+      if (service.level === 2 && parentId !== null) {
+        return state.map(padre => 
           padre.id === parentId
             ? {
                 ...padre,
                 serviciosHijo: padre.serviciosHijo
-                  ? [...padre.serviciosHijo, { ...service, id: Math.round(Math.random()*100) }]
-                  : [{ ...service, id: Math.round(Math.random()*100) }],
+                  ? [
+                      ...padre.serviciosHijo, 
+                      { 
+                        ...service, 
+                        id: Math.round(Math.random() * 100), 
+                        idPadre: parentId, 
+                        serviciosHijo: []
+                      }
+                    ]
+                  : [
+                      { 
+                        ...service, 
+                        id: Math.round(Math.random() * 100), 
+                        idPadre: parentId, 
+                        serviciosHijo: [] 
+                      }
+                    ]
               }
             : padre
         );
       }
       return state;
     }
-
+      
     case 'UPDATE_SERVICE': {
       const { service: updatedService, parentId: updateParentId } = action.payload;
       if (updatedService.level === 1) {
@@ -72,3 +90,5 @@ export const serviceReducer = (state: ServicioPadre[], action: Action): Servicio
       return state;
   }
 };
+
+

@@ -175,30 +175,44 @@ export function MenuAppBar() {
         </DrawerHeader>
         <Divider />
         <List>
-      {['dashboard', 'tickets', 'usuarios', 'configuración'].map((text, index) => (
-        <Link
-          to={`/${text}`}
-          key={`link-${text}`}
-          style={{ textTransform: 'uppercase', color: '#070707', textDecoration: 'none' }}
-        >
-          <ListItem key={text} disablePadding onClick={() => handleClickCategory(index)} style={{margin:"0 8px", width:"93%", borderRadius:"5px"}}>
-            <ListItemButton
-              sx={{
-                backgroundColor: selectedIndex === index ? '#0047BA' : 'transparent',
-                color: selectedIndex === index ? '#FFDD00': '#070707',
-                marginBottom: '0 8px',
-                '&:hover': {
-                  backgroundColor: '#e0e0e0',
-                },
-              }}
-            >
-              <ListItemIcon style={{ textTransform: 'uppercase' }}>{icons[index]}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        </Link>
-      ))}
-    </List>
+          {["dashboard", "tickets", "usuarios", "configuración"].map(
+            (text, index) => (
+              <Link
+                to={`/${text}`}
+                key={`link-${text}`}
+                style={{
+                  textTransform: "uppercase",
+                  color: "#070707",
+                  textDecoration: "none",
+                }}
+              >
+                <ListItem
+                  key={text}
+                  disablePadding
+                  onClick={() => handleClickCategory(index)}
+                  style={{ margin: "0 8px", width: "93%", borderRadius: "5px" }}
+                >
+                  <ListItemButton
+                    sx={{
+                      backgroundColor:
+                        selectedIndex === index ? "#0047BA" : "transparent",
+                      color: selectedIndex === index ? "#FFDD00" : "#070707",
+                      marginBottom: "0 8px",
+                      "&:hover": {
+                        backgroundColor: "#e0e0e0",
+                      },
+                    }}
+                  >
+                    <ListItemIcon style={{ textTransform: "uppercase" }}>
+                      {icons[index]}
+                    </ListItemIcon>
+                    <ListItemText primary={text} />
+                  </ListItemButton>
+                </ListItem>
+              </Link>
+            )
+          )}
+        </List>
 
         <div className="pet-macropay">
           <img src="/public/img-pet-macropay.png" alt="" />

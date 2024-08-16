@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useCallback, useMemo } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Accordion from '@mui/material/Accordion';
@@ -10,7 +10,7 @@ import { EditServiceModalChildren } from './ModalEditServiceChildren';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import AddServiceModal from './Modal';
 import { ServiciosContext } from '../../Context/serviciosContext';
-import { ServicioPadre, ServicioHijo, ServicioContext} from '../../types/services';
+import { ServicioPadre, ServicioHijo, ServicioContext } from '../../types/services';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -20,6 +20,67 @@ import Button from '@mui/material/Button';
 import { AddChildServiceModal } from './ModalChild';
 import './styles.css';
 
+const ServicioAccordion = React.memo(({ servicio, expanded, handleAccordionChange, handleOpen }: { 
+  servicio: ServicioPadre, 
+  expanded: string | false, 
+  handleAccordionChange: (panelId: string) => (event: React.SyntheticEvent, isExpanded: boolean) => void,
+  handleOpen: (id: number, isChildService?: boolean, childId?: number | null) => void
+}) => {
+  return (
+    <Accordion
+      expanded={expanded === servicio.id.toString()}
+      onChange={handleAccordionChange(servicio.id.toString())}
+      id="accordion-services"
+      style={{
+        width: "95%",
+        marginLeft: "30px",
+        borderRadius: "5px",
+        marginTop: "10px",
+      }}
+    >
+      <AccordionSummary
+        expandIcon={<ArrowDropDownIcon />}
+        aria-controls={`panel-${servicio.id}-content`}
+        id={`panel-${servicio.id}-header`}
+      >
+        <Typography>{servicio.name}</Typography>
+        <div className="optionsClickService">
+          <EditServiceModal servicio={servicio} parentId={servicio.id} />
+          <PowerSettingsNewIcon onClick={() => handleOpen(servicio.id)} />
+        </div>
+      </AccordionSummary>
+    </Accordion>
+  );
+});
+const ServicioHijoAccordion = React.memo(({ child, parentId, handleOpen }: {
+  child: ServicioHijo,
+  parentId: number,
+  handleOpen: (id: number, isChildService: boolean, childId: number | null) => void
+}) => {
+  return (
+    <Accordion
+      key={child.id}
+      style={{
+        width: "90%",
+        marginTop: "10px",
+        borderRadius: "5px",
+      }}
+    >
+      <AccordionSummary
+        expandIcon={<ArrowDropDownIcon />}
+        aria-controls={`panel-child-${child.id}-content`}
+        id={`panel-child-${child.id}-header`}
+      >
+        <Typography>{child.name}</Typography>
+        <div className="optionsClickService">
+          <EditServiceModalChildren servicio={child} parentId={parentId} />
+          <PowerSettingsNewIcon onClick={() => handleOpen(parentId, true, child.id)} />
+        </div>
+      </AccordionSummary>
+    </Accordion>
+  );
+});
+
 export function BasicCard() {
   const { serviciosPadres, deleteService } = useContext<ServicioContext>(ServiciosContext);
   const [expanded, setExpanded] = useState<string | false>(false);
@@ -28,36 +89,32 @@ export function BasicCard() {
   const [currentChildServiceId, setCurrentChildServiceId] = useState<number | null>(null);
   const [isChild, setIsChild] = useState(false);
 
-  const handleAccordionChange = (panelId: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+  const handleAccordionChange = useCallback((panelId: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
     event.preventDefault();
     setExpanded(isExpanded ? panelId : false);
-  };
+  }, []);
 
-  console.log(serviciosPadres)
-
-  const handleOpen = (id: number, isChildService = false, childId: number | null = null) => {
+  const handleOpen = useCallback((id: number, isChildService = false, childId: number | null = null) => {
     setCurrentServiceId(id);
     setIsChild(isChildService);
     setCurrentChildServiceId(childId);
     setOpen(true);
-  };
+  }, []);
 
-  const handleCloseNegative = () => {
+  const handleCloseNegative = useCallback(() => {
     setOpen(false);
-  };
+  }, []);
 
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     if (isChild && currentServiceId !== null && currentChildServiceId !== null) {
-      if(deleteService){
-      deleteService(currentChildServiceId, 2, currentServiceId);
-      }
+      deleteService?.(currentChildServiceId, 2, currentServiceId);
     } else if (!isChild && currentServiceId !== null) {
-      if(deleteService){
-      deleteService(currentServiceId, 1, currentServiceId);
-      }
+      deleteService?.(currentServiceId, 1, currentServiceId);
     }
     setOpen(false);
-  };
+  }, [isChild, currentServiceId, currentChildServiceId, deleteService]);
+
+  const memoizedServiciosPadres = useMemo(() => serviciosPadres, [serviciosPadres]);
 
   return (
     <div id="services">
@@ -67,69 +124,29 @@ export function BasicCard() {
           <div style={{ marginLeft: "30px", marginTop: "10px" }}>
             <AddServiceModal />
           </div>
-          {
-          serviciosPadres &&
-            serviciosPadres.map((servicio: ServicioPadre) => (
-              <div key={servicio.id}>
-                <Accordion
-                  expanded={expanded === servicio.id.toString()}
-                  onChange={handleAccordionChange(servicio.id.toString())}
-                  id="accordion-services"
-                  style={{
-                    width: "95%",
-                    marginLeft: "30px",
-                    borderRadius: "5px",
-                    marginTop: "10px",
-                  }}
-                >
-                  <AccordionSummary
-                    expandIcon={<ArrowDropDownIcon />}
-                    aria-controls={`panel-${servicio.id}-content`}
-                    id={`panel-${servicio.id}-header`}
-                  >
-                    <Typography>{servicio.name}</Typography>
-                    <div className="optionsClickService">
-                      <EditServiceModal servicio={servicio} parentId={servicio.id} />
-                      <PowerSettingsNewIcon onClick={() => handleOpen(servicio.id)} />
-                    </div>
-                  </AccordionSummary>
-                  <Typography sx={{ padding: 2 }}>
-                    {servicio.description}
-                  </Typography>
-                </Accordion>
-                {expanded === servicio.id.toString() && (
-                  <div style={{ marginLeft: "60px", marginTop: "10px" }}>
-                    <AddChildServiceModal parentId={servicio.id} />
-                    {servicio.serviciosHijo &&
-                      servicio.serviciosHijo.map((child: ServicioHijo) => (
-                        <Accordion
-                          key={child.id}
-                          style={{
-                            width: "90%",
-                            marginTop: "10px",
-                            borderRadius: "5px",
-                          }}
-                        >
-                          <AccordionSummary
-                            expandIcon={<ArrowDropDownIcon />}
-                            aria-controls={`panel-child-${child.id}-content`}
-                            id={`panel-child-${child.id}-header`}
-                          >
-                            <Typography>{child.name}</Typography>
-                            <div className="optionsClickService">
-                              <EditServiceModalChildren servicio={child} parentId={servicio.id} />
-                              <PowerSettingsNewIcon onClick={() => handleOpen(servicio.id, true, child.id)} />
-                            </div>
-                          </AccordionSummary>
-                          <Typography sx={{ padding: 2 }}>
-                            {child.description}
-                          </Typography>
-                        </Accordion>
-                      ))}
-                  </div>
-                )}
-              </div>
-            ))}
+          {memoizedServiciosPadres && memoizedServiciosPadres.map((servicio: ServicioPadre) => (
+            <div key={servicio.id}>
+              <ServicioAccordion
+                servicio={servicio}
+                expanded={expanded}
+                handleAccordionChange={handleAccordionChange}
+                handleOpen={handleOpen}
+              />
+              {expanded === servicio.id.toString() && (
+                <div style={{ marginLeft: "60px", marginTop: "10px" }}>
+                  <AddChildServiceModal parentId={servicio.id} />
+                  {servicio.serviciosHijo && servicio.serviciosHijo.map((child: ServicioHijo) => (
+                    <ServicioHijoAccordion
+                      key={child.id}
+                      child={child}
+                      parentId={servicio.id}
+                      handleOpen={handleOpen}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
         </CardContent>
       </Card>
 
@@ -155,3 +172,4 @@ export function BasicCard() {
     </div>
   );
 }
+

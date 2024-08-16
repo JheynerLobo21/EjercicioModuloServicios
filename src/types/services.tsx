@@ -1,17 +1,17 @@
-export interface ServicioPadre {
-    id: number;
-    name: string;
-    description: string;
-    level: number;
-    serviciosHijo: ServicioHijo[] | null;
+export interface ServicioHijo {
+  id: number;
+  name: string;
+  description: string;
+  level: number;
+  idPadre: number;
 }
 
-export interface ServicioHijo {
-    id: number;
-    name: string;
-    description: string;
-    level: number;
-    idPadre: number;
+export interface ServicioPadre {
+  id: number;
+  name: string;
+  description: string;
+  level: number;
+  serviciosHijo: ServicioHijo[] | null;
 }
 
 export interface ServicioContext {
